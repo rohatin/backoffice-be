@@ -16,7 +16,7 @@ describe('HomeController', () => {
 
   describe('root', () => {
     it('should return app name from service', () => {
-      expect(homeController.getHello()).toBe('backoffice-be')
+      expect(homeController.getHello()).toBe(process.env.APP_NAME)
     })
   })
 })

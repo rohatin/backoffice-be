@@ -67,6 +67,14 @@ class EnvironmentVariablesValidator {
   @IsString()
   @IsOptional()
   DATABASE_CERT: string
+
+  @IsString()
+  REDIS_HOST: string
+
+  @IsInt()
+  @Min(0)
+  @Max(65535)
+  REDIS_PORT: number
 }
 
 export default registerAs<DatabaseConfig>('database', () => {
@@ -88,6 +96,8 @@ export default registerAs<DatabaseConfig>('database', () => {
     rejectUnauthorized: process.env.DATABASE_REJECT_UNAUTHORIZED === 'true',
     ca: process.env.DATABASE_CA,
     key: process.env.DATABASE_KEY,
-    cert: process.env.DATABASE_CERT
+    cert: process.env.DATABASE_CERT,
+    redisHost: process.env.REDIS_HOST ?? 'localhost',
+    redisPort: Number(process.env.REDIS_PORT) ?? 6379
   }
 })

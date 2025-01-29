@@ -28,6 +28,20 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
         migrationsDir: 'src/database/migrations',
         subscribersDir: 'subscriber'
       },
+      cache: {
+        type: 'redis',
+        options: {
+          host: this.configService.getOrThrow('database.redisHost', {
+            infer: true
+          }),
+          port: this.configService.getOrThrow('database.redisPort', {
+            infer: true
+          }),
+          //for sake of this example we are not making a config with username and password
+          username: '',
+          password: ''
+        }
+      },
       extra: {
         // based on https://node-postgres.com/apis/pool
         // max connection pool size

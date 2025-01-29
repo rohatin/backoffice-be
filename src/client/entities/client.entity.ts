@@ -1,6 +1,8 @@
-import { Column, Entity } from 'typeorm'
+import { Column, Entity, OneToMany } from 'typeorm'
 import { EntityHelper } from '../../utils/entity-helper'
 import { cryptDecryptTransformer } from '../../utils/transformers/crypt-decrypt.transformer'
+import { User } from '../../user/entities/user.entity'
+import { Role } from '../../role/entities/role.entity'
 
 @Entity()
 export class Client extends EntityHelper {
@@ -17,4 +19,14 @@ export class Client extends EntityHelper {
 
   @Column({ type: 'jsonb', default: [] })
   enabledDomains: Array<string>
+
+  @OneToMany(() => User, (user) => user.client)
+  users: Array<User>
+
+  @OneToMany(() => Role, (role) => role.client)
+  roles: Array<Role>
+
+  //this will save data such as jwt secrets and so on
+  @Column({ type: 'json', nullable: true })
+  metadata: Record<string, any>
 }

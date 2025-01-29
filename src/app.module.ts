@@ -1,12 +1,23 @@
-import { DynamicModule, ForwardReference, Module, Type } from '@nestjs/common'
+import {
+  DynamicModule,
+  ForwardReference,
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  Type
+} from '@nestjs/common'
 import { HomeModule } from './home/home.module'
-import { ConfigModule } from '@nestjs/config'
+import { ConfigModule, ConfigService } from '@nestjs/config'
 import appConfig from './config/app.config'
 import { DataSourceOptions } from 'typeorm'
 import { DataSource } from 'typeorm'
 import { TypeOrmConfigService } from './database/typeorm-config.service'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import databaseConfig from './database/config/database.config'
+import { CacheModule } from '@nestjs/cache-manager'
+import { redisStore } from 'cache-manager-redis-yet'
+import { GeneralConfig } from './config/config.type'
+import { ClientCorsMiddleware } from './middleware/client-cors.middleware'
 
 const defaultImports: Array<
   Type<any> | DynamicModule | Promise<DynamicModule> | ForwardReference
@@ -23,10 +34,30 @@ const defaultImports: Array<
     dataSourceFactory: async (options: DataSourceOptions) => {
       return new DataSource(options).initialize()
     }
+  }),
+  //cache module should be globally available since it will be used in most, if not all modules
+  CacheModule.registerAsync({
+    isGlobal: true,
+    useFactory: (configService: ConfigService<GeneralConfig>) => ({
+      store: redisStore,
+      url: `redis://${configService.getOrThrow('database.redisHost', {
+        infer: true
+      })}:${configService.getOrThrow('database.redisPort', {
+        infer: true
+      })}`,
+      ttl: 86400 // Time to live in seconds (24 hours)
+    }),
+    inject: [ConfigService]
   })
 ]
 
 @Module({
   imports: defaultImports
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    //home route is excluded from being cors called since it's useful for testing
+    //just native to api.domain.com and check if the app is alive
+    consumer.apply(ClientCorsMiddleware).exclude('/').forRoutes('*')
+  }
+}

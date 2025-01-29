@@ -18,6 +18,12 @@ import { CacheModule } from '@nestjs/cache-manager'
 import { redisStore } from 'cache-manager-redis-yet'
 import { GeneralConfig } from './config/config.type'
 import { ClientCorsMiddleware } from './middleware/client-cors.middleware'
+import { AuthModule } from './auth/auth.module'
+import { UserModule } from './user/user.module'
+import { SessionModule } from './session/session.module'
+import { RoleModule } from './role/role.module'
+import authConfig from './auth/config/auth.config'
+import { ClientModule } from './client/client.module'
 
 const defaultImports: Array<
   Type<any> | DynamicModule | Promise<DynamicModule> | ForwardReference
@@ -26,7 +32,7 @@ const defaultImports: Array<
   ConfigModule.forRoot({
     //make the config module globally accessible for ease of use
     isGlobal: true,
-    load: [appConfig, databaseConfig],
+    load: [appConfig, databaseConfig, authConfig],
     envFilePath: ['.env']
   }),
   TypeOrmModule.forRootAsync({
@@ -48,7 +54,12 @@ const defaultImports: Array<
       ttl: 86400 // Time to live in seconds (24 hours)
     }),
     inject: [ConfigService]
-  })
+  }),
+  AuthModule,
+  UserModule,
+  SessionModule,
+  RoleModule,
+  ClientModule
 ]
 
 @Module({

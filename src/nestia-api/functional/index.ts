@@ -7,6 +7,9 @@
 import type { IConnection, IPropagation } from "@nestia/fetcher";
 import { PlainFetcher } from "@nestia/fetcher/lib/PlainFetcher";
 
+export * as auth from "./auth";
+export * as roles from "./roles";
+
 /**
  * @controller HomeController.getHello
  * @path GET /

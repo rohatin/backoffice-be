@@ -5,11 +5,13 @@ import {
   ManyToMany,
   JoinTable,
   ManyToOne,
-  JoinColumn
+  JoinColumn,
+  OneToMany
 } from 'typeorm'
 import { EntityHelper } from '../../utils/entity-helper'
 import { Role } from '../../role/entities/role.entity'
 import { Client } from '../../client/entities/client.entity'
+import { Transaction } from '../../transaction/entities/transaction.entity'
 
 @Entity()
 @Index(['clientId', 'email'], { unique: true })
@@ -43,4 +45,7 @@ export class User extends EntityHelper {
 
   @Column()
   clientId: number
+
+  @OneToMany(() => Transaction, (transaction) => transaction.user)
+  transactions: Array<Transaction>
 }

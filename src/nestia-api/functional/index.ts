@@ -9,6 +9,7 @@ import { PlainFetcher } from "@nestia/fetcher/lib/PlainFetcher";
 
 export * as auth from "./auth";
 export * as roles from "./roles";
+export * as transactions from "./transactions";
 
 /**
  * @controller HomeController.getHello

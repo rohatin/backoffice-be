@@ -1,0 +1,20 @@
+{
+  "name": "backoffice-api-sdk",
+  "version": "1.0.0",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "files": [
+    "**/*.js",
+    "**/*.d.ts"
+  ],
+  "scripts": {
+    "prepare": "tsc",
+    "push": "npm publish --access public"
+  },
+  "dependencies": {
+    "@nestia/fetcher": "^3.4.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.2"
+  }
+}

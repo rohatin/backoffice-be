@@ -18,6 +18,8 @@ lerna-debug.log*
 /coverage
 /.nyc_output
 
+src/nestia-api/node_modules
+
 # IDEs and editors
 /.idea
 .project

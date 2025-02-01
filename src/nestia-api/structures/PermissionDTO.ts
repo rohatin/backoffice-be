@@ -1,7 +1,10 @@
+import { ActionType } from "./action-type.enum";
+import { ResourceType } from "./resource-type.enum";
+
 export type PermissionDTO = {
   id: number;
   name: string;
   description: string;
-  action: "view" | "create" | "update" | "delete";
-  resource: "user" | "role" | "admin" | "transaction";
+  action: ActionType;
+  resource: ResourceType;
 };

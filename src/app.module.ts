@@ -25,6 +25,7 @@ import { RoleModule } from './role/role.module'
 import authConfig from './auth/config/auth.config'
 import { ClientModule } from './client/client.module'
 import { TransactionModule } from './transaction/transaction.module'
+import { BlacklistModule } from './blacklist/blacklist.module'
 
 const defaultImports: Array<
   Type<any> | DynamicModule | Promise<DynamicModule> | ForwardReference
@@ -61,7 +62,8 @@ const defaultImports: Array<
   SessionModule,
   RoleModule,
   ClientModule,
-  TransactionModule
+  TransactionModule,
+  BlacklistModule
 ]
 
 @Module({

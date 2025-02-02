@@ -22,6 +22,12 @@ export class User extends EntityHelper {
   @Column()
   passwordHash: string
 
+  @Column()
+  firstName: string
+
+  @Column()
+  lastName: string
+
   @Column({ type: 'jsonb', default: [] })
   previousPasswordHashes: Array<string>
 

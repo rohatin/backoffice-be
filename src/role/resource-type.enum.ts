@@ -2,5 +2,6 @@ export enum ResourceType {
   user = 'user',
   role = 'role',
   admin = 'admin',
-  transaction = 'transaction'
+  transaction = 'transaction',
+  blacklist = 'blacklist'
 }

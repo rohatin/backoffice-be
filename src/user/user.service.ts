@@ -20,7 +20,7 @@ export class UserService {
   async finOneByEmail(clientId: number, email: string) {
     return this.userRepository.findOne({
       where: { email, clientId },
-      relations: ['roles']
+      relations: ['roles', 'roles.permissions']
     })
   }
 }

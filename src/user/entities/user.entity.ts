@@ -31,13 +31,7 @@ export class User extends EntityHelper {
   @Column({ type: 'jsonb', default: [] })
   previousPasswordHashes: Array<string>
 
-  @Column({ nullable: false })
-  @Index({ unique: false })
-  roleId: number
-
-  //an user can be assigned to many roles
-  //basic example is operator and client
-  @ManyToMany(() => Role)
+  @ManyToMany(() => Role, (role) => role.users)
   @JoinTable({
     name: 'user_roles',
     joinColumn: { name: 'userId', referencedColumnName: 'id' },

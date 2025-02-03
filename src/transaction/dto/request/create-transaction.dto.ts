@@ -8,4 +8,5 @@ export type CreateTransactionDTO = {
   amount: number
   status: TransactionStatus
   userId: number
+  description: string
 }

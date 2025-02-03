@@ -23,4 +23,8 @@ export class UserService {
       relations: ['roles', 'roles.permissions']
     })
   }
+
+  async update(id: number, data: Partial<User>) {
+    return this.userRepository.update(id, data)
+  }
 }

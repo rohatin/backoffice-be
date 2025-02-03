@@ -15,7 +15,7 @@ export default registerAs<MailerTypeConfig>('mail', () => {
   validateConfig(process.env, EnvironmentVariablesValidator)
 
   return {
-    apiKey: process.env.SENDGRID_API_KEY,
-    noReplyAddress: process.env.MAILER_NO_REPLY_ADDRESS
+    apiKey: process.env.SENDGRID_API_KEY!,
+    noReplyAddress: process.env.MAILER_NO_REPLY_ADDRESS!
   }
 })

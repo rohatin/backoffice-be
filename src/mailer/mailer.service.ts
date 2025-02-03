@@ -20,10 +20,6 @@ export class MailerService {
       'mail.noReplyAddress',
       { infer: true }
     )
-    this.defaultLang = this.configService.getOrThrow<string>(
-      'app.fallbackLanguage',
-      { infer: true }
-    )
     this.sender = sender
   }
 

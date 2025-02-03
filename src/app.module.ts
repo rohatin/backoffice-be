@@ -27,6 +27,7 @@ import { ClientModule } from './client/client.module'
 import { TransactionModule } from './transaction/transaction.module'
 import { BlacklistModule } from './blacklist/blacklist.module'
 import { MailerModule } from './mailer/mailer.module'
+import mailerConfig from './mailer/config/mailer.config'
 
 const defaultImports: Array<
   Type<any> | DynamicModule | Promise<DynamicModule> | ForwardReference
@@ -35,7 +36,7 @@ const defaultImports: Array<
   ConfigModule.forRoot({
     //make the config module globally accessible for ease of use
     isGlobal: true,
-    load: [appConfig, databaseConfig, authConfig],
+    load: [appConfig, databaseConfig, authConfig, mailerConfig],
     envFilePath: ['.env']
   }),
   TypeOrmModule.forRootAsync({

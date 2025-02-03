@@ -9,6 +9,7 @@ export type TransactionDTO = {
     amount: number;
     status: TransactionStatus;
     userId: number;
+    description: null | string;
     createdAt: string & Format<"date-time">;
     updatedAt: string & Format<"date-time">;
 };

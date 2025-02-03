@@ -1,4 +1,4 @@
 export type MailerTypeConfig = {
-  apiKey?: string
-  noReplyAddress?: string
+  apiKey: string
+  noReplyAddress: string
 }

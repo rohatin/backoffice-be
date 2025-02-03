@@ -6,6 +6,7 @@
 import type { IConnection, IPropagation } from "@nestia/fetcher";
 import type { FailedRequest } from "../../structures/FailedRequest";
 import type { SuccesfulRequestUserDTO } from "../../structures/SuccesfulRequestUserDTO";
+export * as all from "./all";
 /**
  * @controller UserController.findById
  * @path GET /users/:userId

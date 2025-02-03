@@ -74,4 +74,16 @@ export class UserService {
     const savedUser = await this.userRepository.save(user)
     return Array.isArray(savedUser) ? savedUser[0] : savedUser
   }
+
+  async findAllForClient(userId: number, clientId: number) {
+    await this.roleService.checkAccessFor(
+      userId,
+      ActionType.view,
+      ResourceType.user
+    )
+    return this.userRepository.find({
+      where: { clientId },
+      relations: ['roles', 'roles.permissions']
+    })
+  }
 }

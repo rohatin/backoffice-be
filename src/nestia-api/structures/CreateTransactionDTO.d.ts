@@ -4,4 +4,5 @@ export type CreateTransactionDTO = {
     amount: number;
     status: "pending" | "success" | "failed";
     userId: number;
+    description: string;
 };

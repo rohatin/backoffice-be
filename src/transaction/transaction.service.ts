@@ -6,6 +6,7 @@ import { RoleService } from '../role/role.service'
 import { ActionType } from '../role/action-type.enum'
 import { ResourceType } from '../role/resource-type.enum'
 import { CreateTransactionDTO } from './dto/request/create-transaction.dto'
+import { TransactionStatus } from './enum/transaction-status.enum'
 
 @Injectable()
 export class TransactionService {
@@ -27,6 +28,38 @@ export class TransactionService {
       )
     }
     return this.transactionRepository.save(transaction)
+  }
+
+  async processRandomPendingTransactions(): Promise<void> {
+    // Get 5 random pending transactions
+    const pendingTransactions = await this.transactionRepository.find({
+      where: { status: TransactionStatus.pending },
+      take: 5,
+      order: { createdAt: 'DESC' }
+    })
+
+    if (pendingTransactions.length === 0) {
+      return
+    }
+
+    const transactionIds = pendingTransactions.map((t) => t.id)
+    const possibleStatuses = [
+      TransactionStatus.success,
+      TransactionStatus.failed
+    ]
+
+    for (const txId of transactionIds) {
+      // Update each transaction with a random status
+      await this.transactionRepository.update(
+        { id: txId },
+        {
+          status:
+            possibleStatuses[
+              Math.floor(Math.random() * possibleStatuses.length)
+            ]
+        }
+      )
+    }
   }
 
   async findAll(userId: number): Promise<Transaction[]> {

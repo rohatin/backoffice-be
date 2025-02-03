@@ -1,14 +1,39 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, UnauthorizedException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { User } from './entities/user.entity'
 import { Repository } from 'typeorm'
+import { ActionType } from '../role/action-type.enum'
+import { ResourceType } from '../role/resource-type.enum'
+import { RoleService } from '../role/role.service'
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
-    private readonly userRepository: Repository<User>
+    private readonly userRepository: Repository<User>,
+    private readonly roleService: RoleService
   ) {}
+
+  async findByIdWithCheck(userId: number, targetUserId: number): Promise<User> {
+    if (userId !== targetUserId) {
+      await this.roleService.checkAccessFor(
+        userId,
+        ActionType.view,
+        ResourceType.user
+      )
+    }
+
+    const user = await this.userRepository.findOne({
+      where: { id: targetUserId },
+      relations: ['roles', 'roles.permissions']
+    })
+
+    if (!user) {
+      throw new UnauthorizedException('User not found')
+    }
+
+    return user
+  }
 
   async findById(id: number) {
     return this.userRepository.findOneOrFail({

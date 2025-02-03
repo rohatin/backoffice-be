@@ -28,9 +28,13 @@
     "seed:run": "ts-node -r tsconfig-paths/register ./src/database/seeds/run-seed.ts"
   },
   "dependencies": {
+    "@bull-board/api": "^6.7.4",
+    "@bull-board/express": "^6.7.4",
+    "@bull-board/nestjs": "^6.7.4",
     "@nestia/core": "^3.7.0",
     "@nestia/e2e": "^0.7.0",
     "@nestia/sdk": "^3.7.0",
+    "@nestjs/bull": "^11.0.1",
     "@nestjs/cache-manager": "^3.0.0",
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^4.0.0",
@@ -41,6 +45,7 @@
     "@nestjs/typeorm": "^11.0.0",
     "@sendgrid/mail": "^8.1.4",
     "bcryptjs": "^2.4.3",
+    "bull-board": "^2.1.3",
     "cache-manager": "^6.4.0",
     "cache-manager-redis-yet": "^5.1.5",
     "class-transformer": "^0.5.1",

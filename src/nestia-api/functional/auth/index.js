@@ -33,11 +33,12 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.change_password = void 0;
+exports.change_password = exports.admin_register = void 0;
 exports.login = login;
 exports.refresh = refresh;
 exports.logout = logout;
 const PlainFetcher_1 = require("@nestia/fetcher/lib/PlainFetcher");
+exports.admin_register = __importStar(require("./admin_register"));
 exports.change_password = __importStar(require("./change_password"));
 /**
  * @controller AuthController.login

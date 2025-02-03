@@ -7,9 +7,16 @@ import { JwtStrategy } from './strategies/jwt.strategy'
 import { JwtRefreshStrategy } from './strategies/jwt-refresh.strategy'
 import { UserModule } from '../user/user.module'
 import { SessionModule } from '../session/session.module'
+import { BlacklistModule } from '../blacklist/blacklist.module'
 
 @Module({
-  imports: [PassportModule, JwtModule.register({}), UserModule, SessionModule],
+  imports: [
+    PassportModule,
+    JwtModule.register({}),
+    UserModule,
+    SessionModule,
+    BlacklistModule
+  ],
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy, JwtRefreshStrategy],
   exports: [AuthService]

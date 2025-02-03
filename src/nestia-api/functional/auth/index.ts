@@ -12,6 +12,7 @@ import type { InitiateLoginDTO } from "../../structures/InitiateLoginDTO";
 import type { SuccesfulRequestAuthSessionDTO } from "../../structures/SuccesfulRequestAuthSessionDTO";
 import type { SuccesfulRequestnull } from "../../structures/SuccesfulRequestnull";
 
+export * as admin_register from "./admin_register";
 export * as change_password from "./change_password";
 
 /**

@@ -28,6 +28,10 @@ import { TransactionModule } from './transaction/transaction.module'
 import { BlacklistModule } from './blacklist/blacklist.module'
 import { MailerModule } from './mailer/mailer.module'
 import mailerConfig from './mailer/config/mailer.config'
+import { SchedulerModule } from './scheduler/scheduler.module'
+import { BullModule } from '@nestjs/bull'
+import { BullBoardModule } from '@bull-board/nestjs'
+import { ExpressAdapter } from '@bull-board/express'
 
 const defaultImports: Array<
   Type<any> | DynamicModule | Promise<DynamicModule> | ForwardReference
@@ -66,7 +70,21 @@ const defaultImports: Array<
   ClientModule,
   TransactionModule,
   BlacklistModule,
-  MailerModule
+  MailerModule,
+  SchedulerModule,
+  BullModule.forRootAsync({
+    useFactory: (configService: ConfigService<GeneralConfig>) => ({
+      redis: {
+        host: configService.getOrThrow('database.redisHost', { infer: true }),
+        port: configService.getOrThrow('database.redisPort', { infer: true })
+      }
+    }),
+    inject: [ConfigService]
+  }),
+  BullBoardModule.forRoot({
+    route: '/api/queues',
+    adapter: ExpressAdapter // Or FastifyAdapter from `@bull-board/fastify`
+  })
 ]
 
 @Module({

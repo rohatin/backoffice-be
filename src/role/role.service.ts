@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Injectable,
   NotFoundException,
   UnauthorizedException
@@ -41,23 +42,69 @@ export class RoleService {
     action: ActionType,
     resource: ResourceType
   ): Promise<void> {
-    const role = await this.roleRepository
-      .createQueryBuilder('role')
-      .innerJoin('role.permissions', 'permission')
-      .innerJoin('user_roles', 'ur', 'ur.roleId = role.id')
-      .where('ur.userId = :userId', { userId })
-      .andWhere('permission.resource = :resource', { resource })
-      .andWhere(':action = ANY(permission.action)', { action })
-      .getOne()
+    const count = await this.roleRepository
+      .createQueryBuilder()
+      .select('COUNT(*)')
+      .from('role_permissions', 'rp')
+      .where((qb) => {
+        const subQuery = qb
+          .subQuery()
+          .select('id')
+          .from('permission', 'p')
+          .where('p.action = :action')
+          .andWhere('p.resource = :resource')
+          .getQuery()
+        return '"permissionId" IN ' + subQuery
+      })
+      .andWhere((qb) => {
+        const subQuery = qb
+          .subQuery()
+          .select('id')
+          .from('role', 'r')
+          .where((qb2) => {
+            const subQuery2 = qb2
+              .subQuery()
+              .select('DISTINCT("roleId")')
+              .from('user_roles', 'ur')
+              .where('ur."userId" = :userId')
+              .getQuery()
+            return 'id IN ' + subQuery2
+          })
+          .getQuery()
+        return '"roleId" IN ' + subQuery
+      })
+      .setParameters({ action, resource, userId })
+      .getRawOne()
 
-    if (!role) {
+    if (!count || count.count === '0') {
       throw new UnauthorizedException(
-        `You are not allowed to perform this action. Action in cause: ${ActionType.view} and resource in cause: ${ResourceType.role}`
+        `You are not allowed to perform this action. Action in cause: ${action} and resource in cause: ${resource}`
       )
     }
   }
 
-  async create(userId: number, createRoleDto: CreateRoleDTO): Promise<Role> {
+  async getAllPermissions(
+    userId: number,
+    clientId: number
+  ): Promise<Permission[]> {
+    await this.checkAccessFor(userId, ActionType.view, ResourceType.role)
+    const allRoles = await this.roleRepository.find({
+      where: { clientId }
+    })
+    return this.permissionRepository.find({
+      where: {
+        roles: {
+          id: In(allRoles.map((role) => role.id))
+        }
+      }
+    })
+  }
+
+  async create(
+    userId: number,
+    clientId: number,
+    createRoleDto: CreateRoleDTO
+  ): Promise<Role> {
     await this.checkAccessFor(userId, ActionType.create, ResourceType.role)
 
     //fetching all permissions would not be the best (but not as bad) in a real scenario but it will save me a lot of time
@@ -79,10 +126,11 @@ export class RoleService {
     const role = this.roleRepository.create({
       name: createRoleDto.name,
       description: createRoleDto.description,
-      permissions: allPermissions
+      permissions: allPermissions,
+      clientId: clientId
     })
     const dbRole = await this.roleRepository.save(role)
-    return dbRole[0]
+    return Array.isArray(dbRole) ? dbRole[0] : dbRole
   }
 
   async updatePermissions(
@@ -98,6 +146,10 @@ export class RoleService {
 
     if (!role) {
       throw new NotFoundException('Role not found')
+    }
+
+    if (role.name === 'admin') {
+      throw new BadRequestException('Admin role cannot be modified')
     }
 
     const allPermissions = await this.permissionRepository.find({

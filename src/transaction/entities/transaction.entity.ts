@@ -25,4 +25,7 @@ export class Transaction extends EntityHelper {
 
   @Column({ nullable: false, unique: false })
   userId: number
+
+  @Column({ nullable: true, type: 'varchar' })
+  description: string | null = null
 }

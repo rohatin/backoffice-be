@@ -26,6 +26,7 @@ import authConfig from './auth/config/auth.config'
 import { ClientModule } from './client/client.module'
 import { TransactionModule } from './transaction/transaction.module'
 import { BlacklistModule } from './blacklist/blacklist.module'
+import { MailerModule } from './mailer/mailer.module'
 
 const defaultImports: Array<
   Type<any> | DynamicModule | Promise<DynamicModule> | ForwardReference
@@ -63,7 +64,8 @@ const defaultImports: Array<
   RoleModule,
   ClientModule,
   TransactionModule,
-  BlacklistModule
+  BlacklistModule,
+  MailerModule
 ]
 
 @Module({

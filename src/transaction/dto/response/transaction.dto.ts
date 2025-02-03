@@ -8,6 +8,7 @@ export type TransactionDTO = {
   subType: TransactionSubType
   amount: number
   status: TransactionStatus
+  description: string | null
   userId: number
   createdAt: Date
   updatedAt: Date

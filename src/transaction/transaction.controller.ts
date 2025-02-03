@@ -1,4 +1,4 @@
-import { Controller } from '@nestjs/common'
+import { Controller, UseGuards } from '@nestjs/common'
 import { TransactionService } from './transaction.service'
 import { TypedBody, TypedParam, TypedRoute } from '@nestia/core'
 import { CreateTransactionDTO } from './dto/request/create-transaction.dto'
@@ -6,9 +6,11 @@ import { User, UserEntity } from '../utils/decorators/user.decorator'
 import { WrapResponse } from '../utils/decorators/wrap-response'
 import { RequestResponse } from '../utils/types/request-response.type'
 import { TransactionDTO } from './dto/response/transaction.dto'
+import { AuthGuard } from '@nestjs/passport'
 
 @Controller('transactions')
 @WrapResponse()
+@UseGuards(AuthGuard('jwt'))
 export class TransactionController {
   constructor(private readonly transactionService: TransactionService) {}
 

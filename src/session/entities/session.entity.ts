@@ -4,7 +4,9 @@ import {
   Index,
   ManyToOne,
   PrimaryGeneratedColumn,
-  DeleteDateColumn
+  DeleteDateColumn,
+  JoinColumn,
+  Column
 } from 'typeorm'
 import { EntityHelper } from '../../utils/entity-helper'
 import { User } from '../../user/entities/user.entity'
@@ -18,7 +20,11 @@ export class Session extends EntityHelper {
     eager: true
   })
   @Index()
+  @JoinColumn({ name: 'userId' })
   user: User
+
+  @Column({ nullable: true })
+  userId: number
 
   @CreateDateColumn()
   createdAt: Date

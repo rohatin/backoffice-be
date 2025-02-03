@@ -12,6 +12,8 @@ import type { InitiateLoginDTO } from "../../structures/InitiateLoginDTO";
 import type { SuccesfulRequestAuthSessionDTO } from "../../structures/SuccesfulRequestAuthSessionDTO";
 import type { SuccesfulRequestnull } from "../../structures/SuccesfulRequestnull";
 
+export * as change_password from "./change_password";
+
 /**
  * @controller AuthController.login
  * @path POST /auth/login

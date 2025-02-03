@@ -1,4 +1,4 @@
-import { Controller, Request } from '@nestjs/common'
+import { Controller, Request, UseGuards } from '@nestjs/common'
 import { AuthService } from './auth.service'
 import { TypedBody, TypedRoute } from '@nestia/core'
 import { InitiateLoginDTO } from './dto/request/initiate-login.dto'
@@ -7,6 +7,8 @@ import { RequestResponse } from '../utils/types/request-response.type'
 import { AuthSessionDTO } from './dto/response/auth-session.dto'
 import { Client } from '../client/entities/client.entity'
 import { ClientDecorator } from '../utils/decorators/client.decorator'
+import { ChangePasswordDTO } from './dto/request/change-password.dto'
+import { AuthGuard } from '@nestjs/passport'
 
 @Controller('auth')
 @WrapResponse()
@@ -26,6 +28,7 @@ export class AuthController {
   }
 
   @TypedRoute.Get('refresh')
+  @UseGuards(AuthGuard('jwt-refresh'))
   async refresh(
     @ClientDecorator() client: Client,
     @Request() request
@@ -38,11 +41,26 @@ export class AuthController {
   }
 
   @TypedRoute.Post('logout')
+  @UseGuards(AuthGuard('jwt'))
   async logout(@Request() request): Promise<RequestResponse<null>> {
     await this.service.logout(request.user.sessionId)
     return {
       data: null,
       message: 'ok',
+      status: true
+    }
+  }
+
+  @TypedRoute.Post('change-password')
+  @UseGuards(AuthGuard('jwt'))
+  async changePassword(
+    @Request() request,
+    @TypedBody() body: ChangePasswordDTO
+  ): Promise<RequestResponse<null>> {
+    await this.service.changePassword(request.user.id, body)
+    return {
+      data: null,
+      message: 'Password changed successfully',
       status: true
     }
   }

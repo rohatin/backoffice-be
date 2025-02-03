@@ -13,6 +13,7 @@ import { SessionService } from '../session/session.service'
 import { InitiateLoginDTO } from './dto/request/initiate-login.dto'
 import { AuthSessionDTO } from './dto/response/auth-session.dto'
 import { Client } from '../client/entities/client.entity'
+import { ChangePasswordDTO } from './dto/request/change-password.dto'
 
 @Injectable()
 export class AuthService {
@@ -22,6 +23,36 @@ export class AuthService {
     private readonly userService: UserService,
     private readonly sessionService: SessionService
   ) {}
+
+  async changePassword(
+    userId: number,
+    changePasswordDto: ChangePasswordDTO
+  ): Promise<void> {
+    const user = await this.userService.findById(userId)
+
+    if (!user) {
+      throw new BadRequestException('User not found')
+    }
+
+    const isValidPassword = await bcrypt.compare(
+      changePasswordDto.oldPassword,
+      user.passwordHash
+    )
+
+    if (!isValidPassword) {
+      throw new UnauthorizedException('Invalid current password')
+    }
+
+    const salt = await bcrypt.genSalt()
+    const hashedPassword = await bcrypt.hash(
+      changePasswordDto.newPassword,
+      salt
+    )
+
+    await this.userService.update(userId, {
+      passwordHash: hashedPassword
+    })
+  }
 
   async validateLogin(
     client: Client,

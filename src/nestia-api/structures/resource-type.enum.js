@@ -7,4 +7,5 @@ var ResourceType;
     ResourceType["role"] = "role";
     ResourceType["admin"] = "admin";
     ResourceType["transaction"] = "transaction";
+    ResourceType["blacklist"] = "blacklist";
 })(ResourceType || (exports.ResourceType = ResourceType = {}));

@@ -12,7 +12,10 @@ export class SchedulerProcessor {
 
   constructor(private readonly transactionService: TransactionService) {}
 
-  @Process(ScheduledJob.ChaosTransaction)
+  @Process({
+    name: ScheduledJob.ChaosTransaction,
+    concurrency: 5
+  })
   async handleChaosTransaction(job: Job) {
     try {
       this.logger.log('Starting chaos transaction processing')

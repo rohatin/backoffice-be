@@ -6,6 +6,15 @@ import { ActionType } from '../role/action-type.enum'
 import { ResourceType } from '../role/resource-type.enum'
 import { RoleService } from '../role/role.service'
 
+export type CreateUser = {
+  email: string
+  firstName: string
+  lastName: string
+  passwordHash: string
+  roles: any[]
+  clientId: number
+}
+
 @Injectable()
 export class UserService {
   constructor(
@@ -51,5 +60,18 @@ export class UserService {
 
   async update(id: number, data: Partial<User>) {
     return this.userRepository.update(id, data)
+  }
+
+  async create(data: CreateUser): Promise<User> {
+    const user = this.userRepository.create({
+      email: data.email,
+      firstName: data.firstName,
+      lastName: data.lastName,
+      passwordHash: data.passwordHash,
+      roles: data.roles,
+      clientId: data.clientId
+    })
+    const savedUser = await this.userRepository.save(user)
+    return Array.isArray(savedUser) ? savedUser[0] : savedUser
   }
 }

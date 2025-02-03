@@ -30,6 +30,12 @@ export class RoleService {
     })
   }
 
+  async getRolesByIds(roleIds: number[]) {
+    return this.roleRepository.find({
+      where: { id: In(roleIds) }
+    })
+  }
+
   /**
    * Check if a user has access to perform a certain action on a resource type.
    * @param userId id of the user to check
@@ -138,7 +144,7 @@ export class RoleService {
     roleId: number,
     permissionIds: Array<number>
   ): Promise<Role> {
-    await this.checkAccessFor(roleId, ActionType.update, ResourceType.role)
+    await this.checkAccessFor(userId, ActionType.update, ResourceType.role)
     const role = await this.roleRepository.findOne({
       where: { id: roleId },
       relations: ['permissions']

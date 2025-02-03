@@ -9,6 +9,9 @@ import { Client } from '../client/entities/client.entity'
 import { ClientDecorator } from '../utils/decorators/client.decorator'
 import { ChangePasswordDTO } from './dto/request/change-password.dto'
 import { AuthGuard } from '@nestjs/passport'
+import { User } from '../utils/decorators/user.decorator'
+import { UserEntity } from '../utils/decorators/user.decorator'
+import { AdminRegisterDTO } from './dto/request/admin-register.dto'
 
 @Controller('auth')
 @WrapResponse()
@@ -36,6 +39,21 @@ export class AuthController {
     return {
       data: await this.service.refreshToken(client, request.user.sessionId),
       message: 'ok',
+      status: true
+    }
+  }
+
+  @TypedRoute.Post('admin-register')
+  @UseGuards(AuthGuard('jwt'))
+  async adminRegister(
+    @User() user: UserEntity,
+    @ClientDecorator() client: Client,
+    @TypedBody() body: AdminRegisterDTO
+  ): Promise<RequestResponse<null>> {
+    await this.service.adminRegister(user.id, client.id, body)
+    return {
+      data: null,
+      message: 'Admin user created successfully',
       status: true
     }
   }

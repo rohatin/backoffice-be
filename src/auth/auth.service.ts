@@ -14,6 +14,11 @@ import { InitiateLoginDTO } from './dto/request/initiate-login.dto'
 import { AuthSessionDTO } from './dto/response/auth-session.dto'
 import { Client } from '../client/entities/client.entity'
 import { ChangePasswordDTO } from './dto/request/change-password.dto'
+import { ActionType } from '../role/action-type.enum'
+import { AdminRegisterDTO } from './dto/request/admin-register.dto'
+import { ResourceType } from '../role/resource-type.enum'
+import { RoleService } from '../role/role.service'
+import { BlacklistService } from '../blacklist/blacklist.service'
 
 @Injectable()
 export class AuthService {
@@ -21,7 +26,9 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService<GeneralConfig>,
     private readonly userService: UserService,
-    private readonly sessionService: SessionService
+    private readonly sessionService: SessionService,
+    private readonly roleService: RoleService,
+    private readonly blacklistService: BlacklistService
   ) {}
 
   async changePassword(
@@ -54,6 +61,41 @@ export class AuthService {
     })
   }
 
+  async adminRegister(
+    userId: number,
+    clientId: number,
+    registerDto: AdminRegisterDTO
+  ): Promise<void> {
+    await this.roleService.checkAccessFor(
+      userId,
+      ActionType.create,
+      ResourceType.admin
+    )
+
+    const userExists = await this.userService.finOneByEmail(
+      clientId,
+      registerDto.email
+    )
+
+    const roles = await this.roleService.getRolesByIds(registerDto.roleIds)
+
+    if (userExists) {
+      throw new BadRequestException('User already exists')
+    }
+
+    const salt = await bcrypt.genSalt()
+    const hashedPass = await bcrypt.hash(registerDto.password, salt)
+
+    await this.userService.create({
+      email: registerDto.email,
+      passwordHash: hashedPass,
+      firstName: registerDto.firstName,
+      lastName: registerDto.lastName,
+      roles,
+      clientId
+    })
+  }
+
   async validateLogin(
     client: Client,
     loginDto: InitiateLoginDTO
@@ -62,6 +104,10 @@ export class AuthService {
 
     if (!user) {
       throw new BadRequestException('User not found')
+    }
+
+    if (await this.blacklistService.isUserBanned(user.id)) {
+      throw new BadRequestException('User is banned')
     }
 
     const isValidPassword = await bcrypt.compare(

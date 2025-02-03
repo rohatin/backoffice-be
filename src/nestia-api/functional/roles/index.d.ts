@@ -9,6 +9,7 @@ import type { FailedRequest } from "../../structures/FailedRequest";
 import type { SuccesfulRequestArrayRoleDTO } from "../../structures/SuccesfulRequestArrayRoleDTO";
 import type { SuccesfulRequestRoleDTO } from "../../structures/SuccesfulRequestRoleDTO";
 import type { UpdateRolePermissionsDTO } from "../../structures/UpdateRolePermissionsDTO";
+export * as all from "./all";
 /**
  * @controller RoleController.findAll
  * @path GET /roles

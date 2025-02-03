@@ -13,6 +13,8 @@ import type { SuccesfulRequestArrayRoleDTO } from "../../structures/SuccesfulReq
 import type { SuccesfulRequestRoleDTO } from "../../structures/SuccesfulRequestRoleDTO";
 import type { UpdateRolePermissionsDTO } from "../../structures/UpdateRolePermissionsDTO";
 
+export * as all from "./all";
+
 /**
  * @controller RoleController.findAll
  * @path GET /roles

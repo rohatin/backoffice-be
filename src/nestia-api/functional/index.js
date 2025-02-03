@@ -33,10 +33,11 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.transactions = exports.roles = exports.auth = void 0;
+exports.transactions = exports.roles = exports.users = exports.auth = void 0;
 exports.getHello = getHello;
 const PlainFetcher_1 = require("@nestia/fetcher/lib/PlainFetcher");
 exports.auth = __importStar(require("./auth"));
+exports.users = __importStar(require("./users"));
 exports.roles = __importStar(require("./roles"));
 exports.transactions = __importStar(require("./transactions"));
 /**

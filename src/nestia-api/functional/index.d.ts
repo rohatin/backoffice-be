@@ -5,6 +5,7 @@
  */
 import type { IConnection, IPropagation } from "@nestia/fetcher";
 export * as auth from "./auth";
+export * as users from "./users";
 export * as roles from "./roles";
 export * as transactions from "./transactions";
 /**

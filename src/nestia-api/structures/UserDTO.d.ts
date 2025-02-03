@@ -4,6 +4,8 @@ export type UserDTO = {
     id: number;
     email: string;
     roles: RoleDTO[];
+    firstName: string;
+    lastName: string;
     createdAt: string & Format<"date-time">;
     updatedAt: string & Format<"date-time">;
 };
